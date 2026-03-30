@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 15:43:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/03/30 12:47:31 by aalemami         ###   ########.fr       */
+/*   Created: 2026/03/30 12:16:16 by aalemami          #+#    #+#             */
+/*   Updated: 2026/03/30 12:47:52 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#ifndef PIPEX_H
+# define PIPEX_H
 
-int	main(int argc, char **argv, char **envp)
-{
-	if (argc != 5)
-	{
-		ft_putstr_fd("Error.\nUsage: ./pipex file1 cmd1 cmd2 file2\n", 2);
-		return (1);
-	}
-	//first, execute two commands, (argv[1], argv[2]); -> look for 2 commands in path execute them.
-	find_and_execute(argv[1], envp);
-	return (0);
-}
+# include <unistd.h>   // execve, fork
+# include <sys/wait.h> // wait
+# include <stdio.h>    // perror
+# include <stdlib.h>   // exit
+# include "libft.h"
+
+// void	find_and_execute(char *cmd, char **envp);
+
+#endif

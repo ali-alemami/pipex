@@ -3,7 +3,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 SRC = \
-	main.c
+	main.c get_command_path.c
 
 LIBS_DIR = ./libft
 LIBFT = $(LIBS_DIR)/libft.a
