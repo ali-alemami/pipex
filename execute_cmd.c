@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   execute_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 15:43:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/03 17:57:45 by aalemami         ###   ########.fr       */
+/*   Created: 2026/03/30 13:11:07 by aalemami          #+#    #+#             */
+/*   Updated: 2026/03/30 16:16:59 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-
-
-
-int	main(int argc, char **argv, char **envp)
+void	execute_cmd(char *dir, char *flags, char **envp)
 {
-	t_tok_list	tok_list;
+	pid_t	pid;
+	char	**argv;
 
-	
-
-
-	// if (argc != 5)
-	// {
-	// 	ft_putstr_fd("Error.\nUsage: ./pipex file1 cmd1 cmd2 file2\n", 2);
-	// 	return (1);
-	// }
-	// //first, execute two commands, (argv[1], argv[2]); -> look for 2 commands in path execute them.
-	// char *dir = get_directory(argv[1], envp);
-	// execute_cmd(dir, "-la", envp);
-	return (0);
+	argv = malloc(sizeof(char*) * 3);
+	argv[0] = ft_strdup(dir);
+	argv[1] = ft_strdup(flags);
+	argv[2] = NULL;
+	pid = fork();
+	if (pid == 0)
+	{
+		execve(dir, argv, envp);
+		free(dir);
+		perror("execve");
+	}
+	wait(NULL);
 }

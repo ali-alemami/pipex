@@ -6,13 +6,13 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:13:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/03/30 12:46:31 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/03/30 15:47:57 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	free_split(char **str)
+static void	free_string_array(char **str)
 {
 	char	**tmp;
 
@@ -69,13 +69,13 @@ static int	check_all_directories(char **directories, char *cmd, char **final)
 		*final = concat_2char(directories[i], "/", cmd);
 		if (!(*final))
 		{
-			free_split(directories);
+			free_string_array(directories);
 			perror("malloc");
 			exit(1);
 		}
 		if (access(*final, X_OK) == 0)
 		{
-			free_split(directories);
+			free_string_array(directories);
 			return (0);
 		}
 		free(*final);
@@ -84,11 +84,13 @@ static int	check_all_directories(char **directories, char *cmd, char **final)
 	return (1);
 }
 
-char	*get_directory(char *path, char *cmd)
+char	*get_directory(char *cmd, char **envp)
 {
 	char	**directories;
 	char	*final;
+	char	*path;
 
+	path = get_path(envp);
 	directories = ft_split(path, ':');
 	free(path);
 	if (!directories)
@@ -98,19 +100,8 @@ char	*get_directory(char *path, char *cmd)
 	}
 	if (check_all_directories(directories, cmd, &final) == 0)
 		return (final);
-	free_split(directories);
+	free_string_array(directories);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
 	exit(1);
 }
-
-// void	find_and_execute(char *cmd, char **envp)
-// {
-// 	char	*path;
-// 	char	*dir;
-
-// 	path = get_path(envp);
-// 	dir = get_directory(path, cmd);
-// 	free(dir);
-// 	// printf("%s\n", dir);
-// }
