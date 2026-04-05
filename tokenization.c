@@ -6,32 +6,59 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/03 17:53:09 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/05 15:42:30 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	argv_to_tokens(char **argv)
+static void	del(void *content)
 {
-	
-	
-	//argv
-	//list of tokens
-	// infile, cmd , flag, pipe, cmd ,flag , outfile?
-	//approve!
-	//we dont need a liked list, we already know that the maximum element are 6,
-	//but bonus require multiple pipes os we need an infinite linked list
-	//what we can make is a linked list consists of multiple 6 array items, 
-	// each array has (infile cmd flags outfile)
-	// so we have to make a function that reads arguments and splits them, 
-	//
-	//so big linked list, it has an array: (infile cmd flags outfile) and weather its first or not (out to pipe)
-	// we will work with argv bcs we will not edit it;
+	free(content);
+}
+
+void	tokenize_infile(char **argv, t_cmd_list *list)
+{
+	list = cmd_lstnew(ft_strdup(argv[1]));
+	if (!list)
+	{
+		cmd_lstclear(&list, del);
+		perror("malloc");
+		exit(1);
+	}
+	list->type = infile;
+	list = list->next;
+}
+
+int	has_flag(char **argv)
+{
 	
 }
 
-void	execute(list)
+void	tokenize_cmds(char **argv, t_cmd_list *list)
 {
+	int	i;
 
+	i = 1;
+	while(argv[i])
+	{
+		list = cmd_lstnew(ft_strdup(argv[i]));
+		if (!list)
+		{
+			cmd_lstclear(&list, del);
+			perror("malloc");
+			exit(1);
+		}
+		list->type = cmd;
+		list = list->next;
+	}
+}
+
+void	argv_to_tokens(char **argv)
+{
+	t_cmd_list	*list;
+
+	tokenize_infile(argv, list);
+	tokenize_cmds(argv, list);
+	//tokenize_outfile(argv, list);
 }
