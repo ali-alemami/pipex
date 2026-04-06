@@ -6,13 +6,13 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 13:30:01 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/05 15:18:50 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/06 12:12:46 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-t_cmd_list	*	cmd_lstnew(void *content)
+t_cmd_list	*cmd_lstnew(void *content)
 {
 	t_cmd_list	*new_node;
 
@@ -42,6 +42,6 @@ void	cmd_lstclear(t_cmd_list **lst, void (*del)(void*))
 	{
 		current = ((*lst));
 		(*lst) = (*lst)->next;
-		ft_lstdelone(current, del);
+		cmd_lstdelone(current, del);
 	}
 }
