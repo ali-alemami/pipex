@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:16:16 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/07 16:34:04 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/07 17:21:32 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ typedef enum s_tok_type
 	outfile,
 	// pipe
 	cmd,
-	flags
+	flags,
+	here_doc
 }	e_tok_type;
 
 typedef struct s_cmd_list
@@ -43,7 +44,6 @@ void	argv_to_tokens(int argc, char **argv);
 //linked list
 t_cmd_list	*cmd_lstnew(void *content);
 void		cmd_lstclear(t_cmd_list **lst, void (*del)(void*));
-void		cmd_lstadd_back(t_cmd_list **lst, t_cmd_list *new);
 
 //
 

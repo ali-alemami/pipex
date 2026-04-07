@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/07 16:46:18 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/07 17:26:09 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,20 @@ static t_cmd_list	*make_node(char *str, t_cmd_list **head, e_tok_type type)
 	return (node);
 }
 
-void	tokenize_infile(char **argv, t_cmd_list **head, t_cmd_list **tail)
+void	tokenize_heredoc(char *argv, t_cmd_list **head, t_cmd_list **tail)
 {
 	t_cmd_list	*node;
 
-	node = make_node(argv[1], head, infile);
+	node = make_node(argv, head, here_doc);
+	(*head) = node;
+	(*tail) = node;
+}
+
+void	tokenize_infile(char *argv, t_cmd_list **head, t_cmd_list **tail)
+{
+	t_cmd_list	*node;
+
+	node = make_node(argv, head, infile);
 	(*head) = node;
 	(*tail) = node;
 }
@@ -101,6 +110,8 @@ void	print_list(t_cmd_list *list)
 			str = "cmd";
 		else if (list->type == flags)
 			str = "flags";
+		else if (list->type == here_doc)
+			str = "here_doc";
 		else
 			str = "unknown";
 		ft_printf("index[%d]: %s\n", i, str);
@@ -116,7 +127,10 @@ void	argv_to_tokens(int argc, char **argv)
 
 	head = NULL;
 	tail = NULL;
-	tokenize_infile(argv, &head, &tail);
+	if (ft_strncmp(argv[1], "here_doc", 9) != 0)
+		tokenize_infile(argv[1], &head, &tail);
+	else
+		tokenize_heredoc(argv[1], &head, &tail);
 	tokenize_cmds(argv, &head, &tail);
 	tokenize_outfile(argv[argc - 1], &head, &tail);
 	print_list(head);
