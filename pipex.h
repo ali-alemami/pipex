@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:16:16 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/06 12:10:36 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/07 16:34:04 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ typedef struct s_cmd_list
 char	*get_directory(char *cmd, char **envp);
 void	execute_cmd(char *dir, char *flags, char **envp);
 
-void	argv_to_tokens(char **argv);
+void	argv_to_tokens(int argc, char **argv);
 
 //linked list
 t_cmd_list	*cmd_lstnew(void *content);
 void		cmd_lstclear(t_cmd_list **lst, void (*del)(void*));
-
+void		cmd_lstadd_back(t_cmd_list **lst, t_cmd_list *new);
 
 //
 

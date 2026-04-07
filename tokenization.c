@@ -6,89 +6,82 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/06 16:58:49 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/07 16:46:18 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	del(void *content)
+static t_cmd_list	*make_node(char *str, t_cmd_list **head, e_tok_type type)
 {
-	free(content);
-}
+	t_cmd_list	*node;
+	char		*content;
 
-void	tokenize_infile(char **argv, t_cmd_list **list)
-{
-	t_cmd_list	*tmp;
-	
-	tmp = *list;
-	(*list) = cmd_lstnew(ft_strdup(argv[1]));
-	if (!(*list))
+	content = ft_strdup(str);
+	node = cmd_lstnew(content);
+	if (!node || !content)
 	{
-		cmd_lstclear(list, del);
+		free(content);
+		free(node);
+		cmd_lstclear(head, free);
 		perror("malloc");
 		exit(1);
 	}
-	(*list)->type = infile;
+	node->type = type;
+	return (node);
 }
 
-void	tokenize_outfile(char **argv, t_cmd_list **list)
+void	tokenize_infile(char **argv, t_cmd_list **head, t_cmd_list **tail)
 {
-	int	i;
-	i = 0;
-	while (argv[i])
-		i++;
-	i--;
-	(*list) = cmd_lstnew(ft_strdup(argv[i]));
-	if (!(*list))
-	{
-		cmd_lstclear(list, del);
-		perror("malloc");
-		exit(1);
-	}
-	(*list)->type = outfile;
+	t_cmd_list	*node;
+
+	node = make_node(argv[1], head, infile);
+	(*head) = node;
+	(*tail) = node;
+}
+
+void	tokenize_outfile(char *argv, t_cmd_list **head, t_cmd_list **tail)
+{
+	t_cmd_list	*node;
+
+	node = make_node(argv, head, outfile);
+	(*tail)->next = node;
+	(*tail) = node;
 }
 
 static int	has_flag(char *argv)
 {
-	if (ft_strncmp(argv, "-", 1))
+	if (!ft_strncmp(argv, "-", 1))
 		return (1);
 	return (0);
 }
 
-void	tokenize_flags(char *argv, t_cmd_list **list, int *i)
+void	tokenize_flags(char *argv, t_cmd_list **head, t_cmd_list **tail)
 {
-	(*list) = cmd_lstnew(ft_strdup(argv));
-	if (!(*list))
-	{
-		cmd_lstclear(list, del);
-		perror("malloc");
-		exit(1);
-	}
-	(*list)->type = flags;
-	(*list) = (*list)->next;
-	(*i)++;
+	t_cmd_list	*node;
+
+	node = make_node(argv, head, flags);
+	(*tail)->next = node;
+	(*tail) = node;
 }
 
-void	tokenize_cmds(char **argv, t_cmd_list **list)
+void	tokenize_cmds(char **argv, t_cmd_list **head, t_cmd_list **tail)
 {
-	int	i;
+	t_cmd_list	*node;
+	int			i;
 
-	i = 1;
+	i = 2;
 	while(argv[i + 1])
 	{
-		(*list) = cmd_lstnew(ft_strdup(argv[i]));
-		if (!(*list))
-		{
-			cmd_lstclear(list, del);
-			perror("malloc");
-			exit(1);
-		}
-		(*list)->type = cmd;
-		(*list) = (*list)->next;
+		node = make_node(argv[i], head, cmd);
+		(*tail)->next = node;
+		(*tail) = node;
 		i++;
-		if (has_flag(argv[i]))
-			tokenize_flags(argv[i], list, &i);
+		while (has_flag(argv[i]) && argv[i + 1])
+		{
+			tokenize_flags(argv[i], head, tail);
+			i++;
+		}
 	}
 }
 
@@ -96,35 +89,36 @@ void	print_list(t_cmd_list *list)
 {
 	int		i;
 	char	*str;
-	printf("f\n");
+	
 	i = 0;
 	while (list)
 	{
-		printf("statrt\n");
 		if (list->type == infile)
 			str = "infile";
-		if (list->type == outfile)
+		else if (list->type == outfile)
 			str = "outfile";
-		if (list->type == cmd)
+		else if (list->type == cmd)
 			str = "cmd";
-		if (list->type == flags)
+		else if (list->type == flags)
 			str = "flags";
+		else
+			str = "unknown";
 		ft_printf("index[%d]: %s\n", i, str);
 		i++;
 		list = list->next;
-		printf("first\n");
 	}
 }
 
-void	argv_to_tokens(char **argv)
+void	argv_to_tokens(int argc, char **argv)
 {
 	t_cmd_list	*head;
 	t_cmd_list	*tail;
-	t_cmd_list	*node;
 
-	tokenize_infile(argv, &list);
-	tokenize_cmds(argv, &list);
-	tokenize_outfile(argv, &list);
-	printf("content: %s\n", list->content);
-	print_list(list);
+	head = NULL;
+	tail = NULL;
+	tokenize_infile(argv, &head, &tail);
+	tokenize_cmds(argv, &head, &tail);
+	tokenize_outfile(argv[argc - 1], &head, &tail);
+	print_list(head);
+	cmd_lstclear(&head, free);
 }
