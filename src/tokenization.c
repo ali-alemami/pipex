@@ -6,48 +6,11 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/07 17:26:09 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/13 18:59:04 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-static t_cmd_list	*make_node(char *str, t_cmd_list **head, e_tok_type type)
-{
-	t_cmd_list	*node;
-	char		*content;
-
-	content = ft_strdup(str);
-	node = cmd_lstnew(content);
-	if (!node || !content)
-	{
-		free(content);
-		free(node);
-		cmd_lstclear(head, free);
-		perror("malloc");
-		exit(1);
-	}
-	node->type = type;
-	return (node);
-}
-
-void	tokenize_heredoc(char *argv, t_cmd_list **head, t_cmd_list **tail)
-{
-	t_cmd_list	*node;
-
-	node = make_node(argv, head, here_doc);
-	(*head) = node;
-	(*tail) = node;
-}
-
-void	tokenize_infile(char *argv, t_cmd_list **head, t_cmd_list **tail)
-{
-	t_cmd_list	*node;
-
-	node = make_node(argv, head, infile);
-	(*head) = node;
-	(*tail) = node;
-}
 
 void	tokenize_outfile(char *argv, t_cmd_list **head, t_cmd_list **tail)
 {
@@ -56,13 +19,6 @@ void	tokenize_outfile(char *argv, t_cmd_list **head, t_cmd_list **tail)
 	node = make_node(argv, head, outfile);
 	(*tail)->next = node;
 	(*tail) = node;
-}
-
-static int	has_flag(char *argv)
-{
-	if (!ft_strncmp(argv, "-", 1))
-		return (1);
-	return (0);
 }
 
 void	tokenize_flags(char *argv, t_cmd_list **head, t_cmd_list **tail)
@@ -133,6 +89,7 @@ void	argv_to_tokens(int argc, char **argv)
 		tokenize_heredoc(argv[1], &head, &tail);
 	tokenize_cmds(argv, &head, &tail);
 	tokenize_outfile(argv[argc - 1], &head, &tail);
-	print_list(head);
-	cmd_lstclear(&head, free);
+	// send to execution
+	// print_list(head);
+	// cmd_lstclear(&head, free);
 }

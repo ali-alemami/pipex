@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:16:16 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/07 17:21:32 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/13 18:56:32 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ typedef enum s_tok_type
 {
 	infile,
 	outfile,
-	// pipe
 	cmd,
 	flags,
 	here_doc
@@ -36,17 +35,21 @@ typedef struct s_cmd_list
 	struct s_cmd_list	*next;
 }						t_cmd_list;
 
-char	*get_directory(char *cmd, char **envp);
-void	execute_cmd(char *dir, char *flags, char **envp);
-
-void	argv_to_tokens(int argc, char **argv);
 
 //linked list
 t_cmd_list	*cmd_lstnew(void *content);
 void		cmd_lstclear(t_cmd_list **lst, void (*del)(void*));
+t_cmd_list	*make_node(char *str, t_cmd_list **head, e_tok_type type);
 
-//
 
+//tokenization
+int		has_flag(char *argv);
+void	tokenize_heredoc(char *argv, t_cmd_list **head, t_cmd_list **tail);
+void	tokenize_infile(char *argv, t_cmd_list **head, t_cmd_list **tail);
+void	tokenize_outfile(char *argv, t_cmd_list **head, t_cmd_list **tail);
+void	tokenize_flags(char *argv, t_cmd_list **head, t_cmd_list **tail);
+void	tokenize_cmds(char **argv, t_cmd_list **head, t_cmd_list **tail);
+void	argv_to_tokens(int argc, char **argv);
 
 
 #endif

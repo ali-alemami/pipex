@@ -2,8 +2,11 @@ NAME = pipex
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRC = \
-	main.c get_command_path.c execute_cmd.c tokenization.c linked_list_utils.c
+SRC_FILES = \
+	main.c get_command_path.c execute_cmd.c tokenization.c linked_list_utils.c \
+	tok_utilities.c
+
+SRC = $(addprefix src/, $(SRC_FILES))
 
 LIBS_DIR = ./libft
 LIBFT = $(LIBS_DIR)/libft.a
