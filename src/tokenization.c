@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/13 18:59:04 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/17 23:11:50 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 void	tokenize_outfile(char *argv, t_cmd_list **head, t_cmd_list **tail)
 {
 	t_cmd_list	*node;
+	t_cmd_list	*temp;
 
+	temp = (*tail);
 	node = make_node(argv, head, outfile);
 	(*tail)->next = node;
 	(*tail) = node;
+	(*tail)->prev = temp;
 }
 
 void	tokenize_flags(char *argv, t_cmd_list **head, t_cmd_list **tail)
@@ -36,7 +39,7 @@ void	tokenize_cmds(char **argv, t_cmd_list **head, t_cmd_list **tail)
 	int			i;
 
 	i = 2;
-	while(argv[i + 1])
+	while (argv[i + 1])
 	{
 		node = make_node(argv[i], head, cmd);
 		(*tail)->next = node;
@@ -54,7 +57,7 @@ void	print_list(t_cmd_list *list)
 {
 	int		i;
 	char	*str;
-	
+
 	i = 0;
 	while (list)
 	{
@@ -76,20 +79,13 @@ void	print_list(t_cmd_list *list)
 	}
 }
 
-void	argv_to_tokens(int argc, char **argv)
+void	argv_to_tokens(int argc, char **argv,
+	t_cmd_list **head, t_cmd_list **tail)
 {
-	t_cmd_list	*head;
-	t_cmd_list	*tail;
-
-	head = NULL;
-	tail = NULL;
 	if (ft_strncmp(argv[1], "here_doc", 9) != 0)
-		tokenize_infile(argv[1], &head, &tail);
+		tokenize_infile(argv[1], head, tail);
 	else
-		tokenize_heredoc(argv[1], &head, &tail);
-	tokenize_cmds(argv, &head, &tail);
-	tokenize_outfile(argv[argc - 1], &head, &tail);
-	// send to execution
-	// print_list(head);
-	// cmd_lstclear(&head, free);
+		tokenize_heredoc(argv[1], head, tail);
+	tokenize_cmds(argv, head, tail);
+	tokenize_outfile(argv[argc - 1], head, tail);
 }

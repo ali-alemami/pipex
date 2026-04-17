@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 13:30:01 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/13 18:48:28 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/17 23:09:00 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	cmd_lstclear(t_cmd_list **lst, void (*del)(void*))
 	}
 }
 
-t_cmd_list	*make_node(char *str, t_cmd_list **head, e_tok_type type)
+t_cmd_list	*make_node(char *str, t_cmd_list **head, t_tok_type type)
 {
 	t_cmd_list	*node;
 	char		*content;

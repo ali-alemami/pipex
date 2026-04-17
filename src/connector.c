@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_cmd.c                                      :+:      :+:    :+:   */
+/*   connector.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 13:11:07 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/17 23:11:18 by aalemami         ###   ########.fr       */
+/*   Created: 2026/04/17 17:02:35 by aalemami          #+#    #+#             */
+/*   Updated: 2026/04/17 23:12:21 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	execute_cmd(char *dir, char *flags, char **envp)
+void	connector(int argc, char **argv, char **envp)
 {
-	pid_t	pid;
-	char	**argv;
+	t_cmd_list	*head;
+	t_cmd_list	*tail;
 
-	argv = malloc(sizeof(char *) * 3);
-	argv[0] = ft_strdup(dir);
-	argv[1] = ft_strdup(flags);
-	argv[2] = NULL;
-	pid = fork();
-	if (pid == 0)
-	{
-		execve(dir, argv, envp);
-		free(dir);
-		perror("execve");
-	}
-	wait(NULL);
+	head = NULL;
+	tail = NULL;
+	argv_to_tokens(argc, argv, &head, &tail);
+	main_loop(head, tail, envp);
+	cmd_lstclear(&head, free);
 }
