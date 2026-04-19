@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   linked_list_utils.c                                :+:      :+:    :+:   */
+/*   linked_list.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 13:30:01 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/17 23:09:00 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/18 17:06:22 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,24 @@ t_cmd_list	*cmd_lstnew(void *content)
 	return (new_node);
 }
 
-static void	cmd_lstdelone(t_cmd_list *lst, void (*del)(void *))
+static void	cmd_lstdelone(t_cmd_list *node, void (*del)(void *))
 {
-	if (!lst || !del)
+	if (!node || !del)
 		return ;
-	del(lst->content);
-	free(lst);
+	del(node->content);
+	free(node);
 }
 
-void	cmd_lstclear(t_cmd_list **lst, void (*del)(void*))
+void	cmd_lstclear(t_cmd_list **head, void (*del)(void*))
 {
 	t_cmd_list	*current;
 
-	if (!lst || !del)
+	if (!head || !del)
 		return ;
-	while ((*lst))
+	while ((*head))
 	{
-		current = ((*lst));
-		(*lst) = (*lst)->next;
+		current = ((*head));
+		(*head) = (*head)->next;
 		cmd_lstdelone(current, del);
 	}
 }

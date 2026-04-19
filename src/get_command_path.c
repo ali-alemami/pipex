@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:13:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/17 16:35:35 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/18 17:54:02 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ static char	*get_path(char **envp)
 			if (!path)
 			{
 				perror("malloc");
-				exit(1);
+				return (NULL);
 			}
 			return (path);
 		}
 		i++;
 	}
 	ft_putstr_fd("path not found.\n", 2);
-	exit(1);
+	return (NULL);
 }
 
 static char	*concat_2char(char *str, char *s1, char *s2)
@@ -49,29 +49,30 @@ static char	*concat_2char(char *str, char *s1, char *s2)
 	return (final);
 }
 
-static int	check_all_directories(char **directories, char *cmd, char **final)
+static char	*check_all_directories(char **directories, char *cmd)
 {
-	int	i;
+	char	*final;
+	int		i;
 
 	i = 0;
 	while (directories[i])
 	{
-		*final = concat_2char(directories[i], "/", cmd);
-		if (!(*final))
+		final = concat_2char(directories[i], "/", cmd);
+		if (!final)
 		{
 			free_split(directories);
 			perror("malloc");
-			exit(1);
+			return (NULL);
 		}
-		if (access(*final, X_OK) == 0)
+		if (access(final, X_OK) == 0)
 		{
 			free_split(directories);
-			return (0);
+			return (final);
 		}
-		free(*final);
+		free(final);
 		i++;
 	}
-	return (1);
+	return (NULL);
 }
 
 char	*get_directory(char *cmd, char **envp)
@@ -81,17 +82,21 @@ char	*get_directory(char *cmd, char **envp)
 	char	*path;
 
 	path = get_path(envp);
+	if (!path)
+	{
+		perror("malloc");
+		return (NULL);
+	}
 	directories = ft_split(path, ':');
 	free(path);
 	if (!directories)
 	{
 		perror("malloc");
-		exit(1);
+		return (NULL);
 	}
-	if (check_all_directories(directories, cmd, &final) == 0)
-		return (final);
+	final = check_all_directories(directories, cmd);
 	free_split(directories);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
-	exit(1);
+	return (final);
 }

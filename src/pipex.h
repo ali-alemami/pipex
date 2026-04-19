@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:16:16 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/17 23:09:53 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/18 16:51:23 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,6 @@ t_cmd_list	*make_node(char *str, t_cmd_list **head, t_tok_type type);
 
 //tokenization
 int			has_flag(char *argv);
-void		tokenize_heredoc(char *argv, t_cmd_list **head, t_cmd_list **tail);
-void		tokenize_infile(char *argv, t_cmd_list **head, t_cmd_list **tail);
-void		tokenize_outfile(char *argv, t_cmd_list **head, t_cmd_list **tail);
-void		tokenize_flags(char *argv, t_cmd_list **head, t_cmd_list **tail);
-void		tokenize_cmds(char **argv, t_cmd_list **head, t_cmd_list **tail);
 void		argv_to_tokens(int argc, char **argv,
 				t_cmd_list **head, t_cmd_list **tail);
 
@@ -56,7 +51,6 @@ void		argv_to_tokens(int argc, char **argv,
 char		*get_directory(char *cmd, char **envp);
 
 //execution
-
 void		main_loop(t_cmd_list *head, t_cmd_list *tail, char **envp);
 
 //connector

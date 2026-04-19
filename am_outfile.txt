@@ -1,4 +1,3 @@
-this is the path: /usr/bin/cat
 hello
 this is infile content
 final line

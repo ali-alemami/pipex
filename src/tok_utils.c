@@ -1,32 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_cmd.c                                      :+:      :+:    :+:   */
+/*   tok_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 13:11:07 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/17 23:11:18 by aalemami         ###   ########.fr       */
+/*   Created: 2026/04/13 18:49:49 by aalemami          #+#    #+#             */
+/*   Updated: 2026/04/18 17:06:53 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	execute_cmd(char *dir, char *flags, char **envp)
+int	has_flag(char *argv)
 {
-	pid_t	pid;
-	char	**argv;
-
-	argv = malloc(sizeof(char *) * 3);
-	argv[0] = ft_strdup(dir);
-	argv[1] = ft_strdup(flags);
-	argv[2] = NULL;
-	pid = fork();
-	if (pid == 0)
-	{
-		execve(dir, argv, envp);
-		free(dir);
-		perror("execve");
-	}
-	wait(NULL);
+	if (!ft_strncmp(argv, "-", 1))
+		return (1);
+	return (0);
 }
