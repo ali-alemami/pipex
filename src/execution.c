@@ -6,24 +6,25 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 22:57:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/18 18:12:04 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/20 01:56:24 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	make_stdin(t_cmd_list *head)
+static void	point_file_to_std(t_cmd_list *head, char *file_name,
+	t_tok_type type, int open_mode)
 {
 	int	fd;
 
-	fd = open(head->content, O_RDONLY);
+	fd = open(file_name, open_mode);
 	if (fd == -1)
 	{
 		cmd_lstclear(head, free);
 		perror("open infile");
 		exit(1);
 	}
-	if (dup2(fd, STDIN_FILENO) == -1)
+	if (dup2(fd, type) == -1)
 	{
 		cmd_lstclear(head, free);
 		close(fd);
@@ -33,27 +34,36 @@ static void	make_stdin(t_cmd_list *head)
 	close(fd);
 }
 
+static void	execute_cmd(t_cmd_list *head, char *cmd, char **envp)
+{
+	char	*cmd_path;
+
+	cmd_path = get_directory(cmd, envp);
+	if (!cmd_path)
+	{
+		cmd_lstclear(head, free);
+		exit(1);
+	}
+	if (execve(cmd_path, (char *[]){cmd, NULL}, envp) == -1)
+	{
+		cmd_lstclear(head, free);
+		free(cmd_path);
+		perror("execve");
+		exit(1);
+	}
+}
+
+static void	make_stdin(t_cmd_list *head)
+{
+	point_file_to_std(head, head->content, stdin, 00);
+}
+
 static void	make_stdout(t_cmd_list *head, t_cmd_list *tail, char **envp)
 {
 	char	*cmd_path;
-	int		fd;
 	pid_t	pid;
 
-	fd = open(tail->content, O_WRONLY);
-	if (fd == -1)
-	{
-		cmd_lstclear(head, free);
-		perror("open outfile");
-		exit(1);
-	}
-	if (dup2(fd, STDOUT_FILENO) == -1)
-	{
-		cmd_lstclear(head, free);
-		close(fd);
-		perror("dup2");
-		exit(1);
-	}
-	close(fd);
+	point_file_to_std(head, tail->content, stdout, 01);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -62,21 +72,7 @@ static void	make_stdout(t_cmd_list *head, t_cmd_list *tail, char **envp)
 		exit(1);
 	}
 	if (pid == 0)
-	{
-		cmd_path = get_directory(tail->prev->content, envp);
-		if (!cmd_path)
-		{
-			cmd_lstclear(head, free);
-			exit(1);
-		}
-		if (execve(cmd_path, (char *[]){tail->prev->content, NULL}, envp) == -1)
-		{
-			cmd_lstclear(head, free);
-			free(cmd_path);
-			perror("execve");
-			exit(1);
-		}
-	}
+		execute_cmd(head, tail->prev->content, envp);
 	waitpid(pid, NULL, 0);
 	free(cmd_path);
 }
@@ -108,18 +104,7 @@ static void	point_cmd_to_cmd(t_cmd_list *head, t_cmd_list *node, char **envp)
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
 		cmd_path = get_directory(node->content, envp);
-		if (!cmd_path)
-		{
-			cmd_lstclear(head, free);
-			exit(1);
-		}
-		if (execve(cmd_path, (char *[]){node->content, NULL}, envp) == -1)
-		{
-			cmd_lstclear(head, free);
-			free(cmd_path);
-			perror("execve");
-			exit(1);
-		}
+		execute_cmd(head, node->content, envp);
 	}
 	free(cmd_path);
 	waitpid(pid, NULL, 0);
