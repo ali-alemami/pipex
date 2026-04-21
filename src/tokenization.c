@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/18 17:06:57 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/22 02:25:09 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	tokenize_cmds(char **argv, t_cmd_list **head, t_cmd_list **tail)
 		(*tail)->next = node;
 		(*tail) = node;
 		i++;
-		while (has_flag(argv[i]) && argv[i + 1])
+		while (is_flag(argv[i]) && argv[i + 1])
 		{
 			tokenize_flags(argv[i], head, tail);
 			i++;

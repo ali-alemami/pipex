@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:16:16 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/18 16:51:23 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/22 02:25:09 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,17 @@ void		cmd_lstclear(t_cmd_list **lst, void (*del)(void*));
 t_cmd_list	*make_node(char *str, t_cmd_list **head, t_tok_type type);
 
 //tokenization
-int			has_flag(char *argv);
-void		argv_to_tokens(int argc, char **argv,
+int				is_flag(char *argv);
+void			argv_to_tokens(int argc, char **argv,
 				t_cmd_list **head, t_cmd_list **tail);
 
 //path
 char		*get_directory(char *cmd, char **envp);
 
 //execution
+void		clear_exit(t_cmd_list *head, char *error_message);
+void		close_dup2(t_cmd_list *head, int fd_to_close, int fd_to_dup, int std);
+void		execute_cmd(t_cmd_list *head, char *cmd, char **envp);
 void		main_loop(t_cmd_list *head, t_cmd_list *tail, char **envp);
 
 //connector

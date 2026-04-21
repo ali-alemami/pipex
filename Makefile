@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRC_FILES = \
 	main.c get_command_path.c tokenization.c linked_list.c \
-	tok_utils.c execution.c connector.c
+	tok_utils.c execution.c executions_utils.c connector.c
 
 SRC = $(addprefix src/, $(SRC_FILES))
 

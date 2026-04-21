@@ -6,13 +6,13 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 18:49:49 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/18 17:06:53 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/22 02:25:09 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	has_flag(char *argv)
+int	is_flag(char *argv)
 {
 	if (!ft_strncmp(argv, "-", 1))
 		return (1);
