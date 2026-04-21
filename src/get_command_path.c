@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:13:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/18 17:54:02 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/21 21:54:06 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,11 @@ static char	*check_all_directories(char **directories, char *cmd)
 		final = concat_2char(directories[i], "/", cmd);
 		if (!final)
 		{
-			free_split(directories);
 			perror("malloc");
 			return (NULL);
 		}
 		if (access(final, X_OK) == 0)
 		{
-			free_split(directories);
 			return (final);
 		}
 		free(final);
@@ -83,10 +81,7 @@ char	*get_directory(char *cmd, char **envp)
 
 	path = get_path(envp);
 	if (!path)
-	{
-		perror("malloc");
 		return (NULL);
-	}
 	directories = ft_split(path, ':');
 	free(path);
 	if (!directories)
@@ -96,7 +91,10 @@ char	*get_directory(char *cmd, char **envp)
 	}
 	final = check_all_directories(directories, cmd);
 	free_split(directories);
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": command not found\n", 2);
+	if (!final)
+	{
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": command not found\n", 2);
+	}
 	return (final);
 }
