@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 22:57:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/20 01:56:24 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/21 20:14:02 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static void	make_stdin(t_cmd_list *head)
 
 static void	make_stdout(t_cmd_list *head, t_cmd_list *tail, char **envp)
 {
-	char	*cmd_path;
 	pid_t	pid;
 
 	point_file_to_std(head, tail->content, stdout, 01);
@@ -74,14 +73,12 @@ static void	make_stdout(t_cmd_list *head, t_cmd_list *tail, char **envp)
 	if (pid == 0)
 		execute_cmd(head, tail->prev->content, envp);
 	waitpid(pid, NULL, 0);
-	free(cmd_path);
 }
 
 static void	point_cmd_to_cmd(t_cmd_list *head, t_cmd_list *node, char **envp)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
-	char	*cmd_path;
 
 	if (!node->next->next)
 		return ;
@@ -101,15 +98,21 @@ static void	point_cmd_to_cmd(t_cmd_list *head, t_cmd_list *node, char **envp)
 	if (pid == 0)
 	{
 		close(pipe_fd[0]);
-		dup2(pipe_fd[1], STDOUT_FILENO);
+		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			exit(1);
+		}
 		close(pipe_fd[1]);
-		cmd_path = get_directory(node->content, envp);
 		execute_cmd(head, node->content, envp);
 	}
-	free(cmd_path);
 	waitpid(pid, NULL, 0);
 	close(pipe_fd[1]);
-	dup2(pipe_fd[0], STDIN_FILENO);
+	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		exit(1);
+	}
 	close(pipe_fd[0]);
 	point_cmd_to_cmd(head, node->next, envp);
 }
