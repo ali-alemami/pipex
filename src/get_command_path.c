@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:13:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/21 21:54:06 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/22 17:22:19 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ static char	*check_all_directories(char **directories, char *cmd)
 		free(final);
 		i++;
 	}
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": command not found\n", 2);
 	return (NULL);
 }
 
@@ -90,11 +92,6 @@ char	*get_directory(char *cmd, char **envp)
 		return (NULL);
 	}
 	final = check_all_directories(directories, cmd);
-	free_split(directories);
-	if (!final)
-	{
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": command not found\n", 2);
-	}
+	ft_free_split(directories);
 	return (final);
 }

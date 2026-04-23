@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 12:16:16 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/22 02:25:09 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/22 18:39:09 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,11 @@ void			argv_to_tokens(int argc, char **argv,
 char		*get_directory(char *cmd, char **envp);
 
 //execution
-void		clear_exit(t_cmd_list *head, char *error_message);
+void	clear_exit(t_cmd_list *head, char *error_message, char *free_str);
 void		close_dup2(t_cmd_list *head, int fd_to_close, int fd_to_dup, int std);
-void		execute_cmd(t_cmd_list *head, char *cmd, char **envp);
+void	execute_cmd(t_cmd_list *head, t_cmd_list *node, char **envp);
 void		main_loop(t_cmd_list *head, t_cmd_list *tail, char **envp);
-
+void	child_failure(t_cmd_list *head, int pipe_fd[2], int status);
 //connector
 void		connector(int argc, char **argv, char **envp);
 

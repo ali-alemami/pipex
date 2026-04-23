@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 22:57:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/22 02:16:35 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/22 19:31:22 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ static void	point_file_to_std(t_cmd_list *head, char *file_name,
 
 	fd = open(file_name, open_mode);
 	if (fd == -1)
-		clear_exit(head, "open");
+		clear_exit(head, "open", NULL);
 	if (dup2(fd, type) == -1)
 	{
 		close(fd);
-		clear_exit(head, "dup2");
+		clear_exit(head, "dup2", NULL);
 	}
 	close(fd);
 }
@@ -36,36 +36,52 @@ static void	make_stdin(t_cmd_list *head)
 static void	make_stdout(t_cmd_list *head, t_cmd_list *tail, char **envp)
 {
 	pid_t	pid;
+	int		status;
 
 	point_file_to_std(head, tail->content, STDOUT_FILENO, O_WRONLY);
 	pid = fork();
 	if (pid == -1)
-		clear_exit(head, "fork");
+		clear_exit(head, "fork", NULL);
 	if (pid == 0)
-		execute_cmd(head, tail->prev->content, envp);
-	waitpid(pid, NULL, 0);
+	{
+		if (is_flag(tail->prev->content))
+			execute_cmd(head, tail->prev->prev, envp);
+		else
+			execute_cmd(head, tail->prev, envp);
+	}
+		waitpid(pid, &status, 0);
+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+	{
+		cmd_lstclear(&head, free);
+		exit(WEXITSTATUS(status));
+	}
 }
 
 static void	point_cmd_to_cmd(t_cmd_list *head, t_cmd_list *node, char **envp)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
-
-	if (!node->next->next)
+	int		status;
+	
+	if (!node->next->next || (is_flag(node->next->next->content) && !node->next->next->next))
 		return ;
 	if (pipe(pipe_fd) == -1)
-		clear_exit(head, "pipe");
+		clear_exit(head, "pipe", NULL);
 	pid = fork();
 	if (pid == -1)
-		clear_exit(head, "fork");
+		clear_exit(head, "fork", NULL);
 	if (pid == 0)
 	{
 		close_dup2(head, pipe_fd[0], pipe_fd[1], STDOUT_FILENO);
-		execute_cmd(head, node->content, envp);
+		execute_cmd(head, node, envp);
 	}
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
+	child_failure(head, pipe_fd, status);
 	close_dup2(head, pipe_fd[1], pipe_fd[0], STDIN_FILENO);
-	point_cmd_to_cmd(head, node->next, envp);
+	if (is_flag(node->next->content))
+		point_cmd_to_cmd(head, node->next->next, envp);
+	else
+		point_cmd_to_cmd(head, node->next, envp);
 }
 
 void	main_loop(t_cmd_list *head, t_cmd_list *tail, char **envp)
