@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 22:57:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/22 19:31:22 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/23 22:46:29 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static void	point_cmd_to_cmd(t_cmd_list *head, t_cmd_list *node, char **envp)
 	int		pipe_fd[2];
 	int		status;
 	
-	if (!node->next->next || (is_flag(node->next->next->content) && !node->next->next->next))
+	if (!node->next->next || (is_flag(node->next->content) && !node->next->next->next))
 		return ;
 	if (pipe(pipe_fd) == -1)
 		clear_exit(head, "pipe", NULL);

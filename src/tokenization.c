@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:45 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/22 02:25:09 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/23 22:56:35 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,13 @@ static void	tokenize_outfile(char *argv, t_cmd_list **head, t_cmd_list **tail)
 static void	tokenize_flags(char *argv, t_cmd_list **head, t_cmd_list **tail)
 {
 	t_cmd_list	*node;
+	t_cmd_list	*temp;
 
+	temp = (*tail);
 	node = make_node(argv, head, flags);
 	(*tail)->next = node;
 	(*tail) = node;
+	(*tail)->prev = temp;
 }
 
 static void	tokenize_cmds(char **argv, t_cmd_list **head, t_cmd_list **tail)
