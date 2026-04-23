@@ -1,3 +1,2 @@
-     1	hello$
-     2	this is infile content$
-     3	final line
+hi
+hi hello

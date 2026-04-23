@@ -1,0 +1,1 @@
+< am_infile.txt ls | wc > newfile.txt

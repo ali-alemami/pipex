@@ -6,7 +6,7 @@
 /*   By: aalemami <aalemami@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/13 22:57:56 by aalemami          #+#    #+#             */
-/*   Updated: 2026/04/23 22:46:29 by aalemami         ###   ########.fr       */
+/*   Updated: 2026/04/23 23:23:15 by aalemami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@ static void	point_file_to_std(t_cmd_list *head, char *file_name,
 	t_tok_type type, int open_mode)
 {
 	int	fd;
-
-	fd = open(file_name, open_mode);
+	if (type == STDOUT_FILENO)
+		fd = open(file_name, open_mode, 0644);
+	else
+		fd = open(file_name, open_mode);
 	if (fd == -1)
 		clear_exit(head, "open", NULL);
 	if (dup2(fd, type) == -1)
@@ -38,7 +40,7 @@ static void	make_stdout(t_cmd_list *head, t_cmd_list *tail, char **envp)
 	pid_t	pid;
 	int		status;
 
-	point_file_to_std(head, tail->content, STDOUT_FILENO, O_WRONLY);
+	point_file_to_std(head, tail->content, STDOUT_FILENO, O_WRONLY | O_CREAT | O_TRUNC);
 	pid = fork();
 	if (pid == -1)
 		clear_exit(head, "fork", NULL);
