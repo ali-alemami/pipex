@@ -53,6 +53,4 @@ Equivalent shell behavior:
 
 **AI usage:**
 
-Claude (claude.ai) was used in the following parts of the project:
-
 Claude (claude.ai) was an invaluable resource throughout the project, providing clear and in-depth explanations that made tackling complex Unix concepts significantly easier.
