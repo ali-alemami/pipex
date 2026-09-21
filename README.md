@@ -16,9 +16,10 @@ The goal is to understand how processes communicate through pipes using `fork()`
 
 ### Compilation
 
-Compile using `make`:
+Initialize submodules and compile using `make`:
 
 ```bash
+git submodule update --init
 make
 ```
 
@@ -31,15 +32,17 @@ make re      # Rebuild from scratch
 
 ### Usage
 
+Standard pipeline:
+
 ```bash
-./pipex <infile> <cmd1> <cmd2> <outfile>
+./pipex <infile> <cmd1> [flags] <cmd2> [flags] ... <outfile>
 ```
 
 | Argument | Description |
 | :--- | :--- |
 | `infile` | File to read input from |
-| `cmd1` | First command (reads from infile) |
-| `cmd2` | Second command (writes to outfile) |
+| `cmd` | Executable name (resolved via PATH) |
+| `flags` | Optional command flags (e.g. `-l`, `-n`) |
 | `outfile` | File to write final output to |
 
 Equivalent shell behavior:
@@ -50,9 +53,23 @@ Equivalent shell behavior:
 ### Examples
 
 ```bash
-./pipex infile "ls -l" "wc -l" outfile
-./pipex infile "cat" "grep hello" outfile
-./pipex infile "head -5" "tr a-z A-Z" outfile
+./pipex infile ls -l wc -l outfile
+./pipex infile head -5 wc -c outfile
+```
+
+Multiple commands can be chained in sequence:
+```bash
+./pipex infile cat -n head -3 wc -l outfile
+```
+
+Here-document mode:
+```bash
+./pipex here_doc LIMITER cmd1 cmd2 outfile
+```
+
+Equivalent shell behavior:
+```bash
+cmd1 << LIMITER | cmd2 >> outfile
 ```
 
 ---
