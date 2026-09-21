@@ -1,1 +1,4 @@
+*.o
+pipex
 .vscode/
+.DS_Store
