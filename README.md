@@ -32,8 +32,6 @@ make re      # Rebuild from scratch
 
 ### Usage
 
-Standard pipeline:
-
 ```bash
 ./pipex <infile> <cmd1> [flags] <cmd2> [flags] ... <outfile>
 ```
@@ -41,7 +39,7 @@ Standard pipeline:
 | Argument | Description |
 | :--- | :--- |
 | `infile` | File to read input from |
-| `cmd` | Executable name (resolved via PATH) |
+| `cmd` | Command executable (resolved via PATH) |
 | `flags` | Optional command flags (e.g. `-l`, `-n`) |
 | `outfile` | File to write final output to |
 
@@ -60,16 +58,6 @@ Equivalent shell behavior:
 Multiple commands can be chained in sequence:
 ```bash
 ./pipex infile cat -n head -3 wc -l outfile
-```
-
-Here-document mode:
-```bash
-./pipex here_doc LIMITER cmd1 cmd2 outfile
-```
-
-Equivalent shell behavior:
-```bash
-cmd1 << LIMITER | cmd2 >> outfile
 ```
 
 ---
